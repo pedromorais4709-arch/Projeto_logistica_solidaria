@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% block title %}Rastreamento{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold mb-6">Rastrear Pedido</h1>
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
+    <form method="get" class="flex gap-3">
+      <input type="text" name="codigo" value="{{ codigo }}" placeholder="Ex: LS3FA8B2C1"
+        class="flex-1 px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+      <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium text-sm hover:bg-primary-dark transition-colors">Rastrear</button>
+    </form>
+  </div>
+  {% if codigo and not pedido %}
+  <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700">Código não encontrado. Verifique e tente novamente.</div>
+  {% endif %}
+  {% if pedido %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+    <div class="flex justify-between items-center mb-4">
+      <div>
+        <p class="font-semibold text-lg">{{ pedido.doacao.titulo }}</p>
+        <p class="text-sm text-gray-500">Pedido #{{ pedido.pk }} · {{ pedido.codigo_rastreio }}</p>
+      </div>
+      <span class="status-badge badge-{{ pedido.status }}">{{ pedido.get_status_display }}</span>
+    </div>
+    <a href="{% url 'rastreamento:detalhe' pedido.codigo_rastreio %}" class="text-primary text-sm hover:underline">Ver detalhes completos →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+{% block title %}Notificações{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Notificações <span class="text-sm font-normal text-gray-400">({{ nao_lidas }} não lidas)</span></h1>
+<div class="flex flex-col gap-3">
+  {% for notif in notificacoes %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex gap-4 items-start">
+    <div class="text-2xl">🔔</div>
+    <div class="flex-1">
+      <p class="font-medium text-sm">{{ notif.titulo }}</p>
+      <p class="text-sm text-gray-500">{{ notif.mensagem }}</p>
+      <p class="text-xs text-gray-400 mt-1">{{ notif.data_criacao|date:"d/m/Y H:i" }}</p>
+    </div>
+    {% if notif.link %}
+    <a href="{{ notif.link }}" class="text-primary text-sm hover:underline shrink-0">Ver →</a>
+    {% endif %}
+  </div>
+  {% empty %}
+  <div class="text-center py-12 text-gray-400"><div class="text-5xl mb-3">🔔</div><p>Nenhuma notificação.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

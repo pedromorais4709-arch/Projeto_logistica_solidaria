@@ -1,0 +1,166 @@
+INFO 2026-05-26 23:50:11,368 services Criando doação: doador=1
+ERROR 2026-05-26 23:50:11,369 services Erro ao criar doação: Field 'id' expected a number but got <CategoriaDoacao: Roupas>.
+Traceback (most recent call last):
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 2128, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'CategoriaDoacao'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/apps/doacoes/services.py", line 27, in criar_doacao
+    doacao.save()
+    ~~~~~~~~~~~^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 874, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 966, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, insert_fields, returning_fields, raw
+    )
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 1220, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/query.py", line 1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/sql/compiler.py", line 1924, in execute_sql
+    for sql, params in self.as_sql():
+                       ~~~~~~~~~~~^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/sql/compiler.py", line 1813, in as_sql
+    field_prepare(field_pre_save(obj)) for obj in self.query.objs
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/sql/compiler.py", line 1742, in prepare_value
+    return field.get_db_prep_save(value, connection=self.connection)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/related.py", line 1185, in get_db_prep_save
+    return self.target_field.get_db_prep_save(value, connection=connection)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 1011, in get_db_prep_save
+    return self.get_db_prep_value(value, connection=connection, prepared=False)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 2820, in get_db_prep_value
+    value = self.get_prep_value(value)
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+TypeError: Field 'id' expected a number but got <CategoriaDoacao: Roupas>.
+ERROR 2026-05-26 23:50:11,378 views Erro inesperado ao criar doação
+Traceback (most recent call last):
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 2128, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'CategoriaDoacao'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/apps/doacoes/views.py", line 43, in nova
+    doacao = criar_doacao(
+        request.user,
+        form.cleaned_data,
+        imagem=request.FILES.get('imagem'),
+    )
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/apps/doacoes/services.py", line 27, in criar_doacao
+    doacao.save()
+    ~~~~~~~~~~~^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 874, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 966, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, insert_fields, returning_fields, raw
+    )
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/base.py", line 1220, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/query.py", line 1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/sql/compiler.py", line 1924, in execute_sql
+    for sql, params in self.as_sql():
+                       ~~~~~~~~~~~^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/sql/compiler.py", line 1813, in as_sql
+    field_prepare(field_pre_save(obj)) for obj in self.query.objs
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/sql/compiler.py", line 1742, in prepare_value
+    return field.get_db_prep_save(value, connection=self.connection)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/related.py", line 1185, in get_db_prep_save
+    return self.target_field.get_db_prep_save(value, connection=connection)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 1011, in get_db_prep_save
+    return self.get_db_prep_value(value, connection=connection, prepared=False)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 2820, in get_db_prep_value
+    value = self.get_prep_value(value)
+  File "/home/emy/Logistica_solidaria/logistica_solidaria/.venv/lib64/python3.14/site-packages/django/db/models/fields/__init__.py", line 2130, in get_prep_value
+    raise e.__class__(
+        "Field '%s' expected a number but got %r." % (self.name, value),
+    ) from e
+TypeError: Field 'id' expected a number but got <CategoriaDoacao: Roupas>.
+INFO 2026-05-26 23:51:42,205 services Criando doação: doador=1
+INFO 2026-05-26 23:51:42,210 services Doação #1 criada: roupas frio
+INFO 2026-05-26 23:53:51,730 services Criando doação: doador=4
+INFO 2026-05-26 23:59:06,267 services Criando pedido: usuario=4 doacao=1
+INFO 2026-05-26 23:59:06,270 signals Novo pedido criado: #1 código=LSAD3F799F
+INFO 2026-05-26 23:59:06,273 services Pedido #1 criado com código LSAD3F799F
+INFO 2026-05-27 17:14:46,823 services Atualizando pedido #1: pendente → aprovado por 1
+INFO 2026-05-27 17:14:49,045 services Atualizando pedido #1: pendente → aprovado por 1
+INFO 2026-05-27 17:14:50,096 services Pedido #1 atualizado para aprovado
+INFO 2026-05-27 17:14:50,893 services Atualizando pedido #1: aprovado → aprovado por 1
+INFO 2026-05-27 17:14:54,118 services Pedido #1 atualizado para aprovado
+INFO 2026-05-27 17:14:58,713 services Atualizando pedido #1: aprovado → em_separacao por 1
+INFO 2026-05-27 17:15:04,844 services Pedido #1 atualizado para em_separacao
+INFO 2026-05-27 17:15:07,586 services Atualizando pedido #1: em_separacao → em_transito por 1
+INFO 2026-05-27 17:15:11,323 services Pedido #1 atualizado para em_transito
+INFO 2026-05-27 17:15:15,693 services Atualizando pedido #1: em_transito → entregue por 1
+INFO 2026-05-27 17:15:19,433 services Pedido #1 atualizado para entregue
+INFO 2026-05-27 17:16:22,591 services Criando avaliação: pedido=1 avaliador=4
+INFO 2026-05-27 17:16:22,600 services Avaliação #1 criada com nota 5

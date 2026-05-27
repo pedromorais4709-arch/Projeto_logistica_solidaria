@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+{% block title %}Doações{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Doações Disponíveis</h1>
+  {% if request.user.tipo == 'doador' %}
+  <a href="{% url 'doacoes:nova' %}" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">+ Nova Doação</a>
+  {% endif %}
+</div>
+
+<div class="bg-white rounded-xl border border-gray-100 p-4 mb-6">
+  <form method="get" class="flex gap-3">
+    <select name="status" class="px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+      <option value="">Todos os status</option>
+      <option value="disponivel" {% if status_filtro == 'disponivel' %}selected{% endif %}>Disponível</option>
+      <option value="reservado" {% if status_filtro == 'reservado' %}selected{% endif %}>Reservado</option>
+      <option value="entregue" {% if status_filtro == 'entregue' %}selected{% endif %}>Entregue</option>
+    </select>
+    <select name="categoria" class="px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+      <option value="">Todas as categorias</option>
+      {% for cat in categorias %}
+      <option value="{{ cat.pk }}" {% if categoria_filtro == cat.pk|stringformat:"s" %}selected{% endif %}>{{ cat.nome }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">Filtrar</button>
+    <a href="{% url 'doacoes:lista' %}" class="px-4 py-2 rounded-lg text-sm text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors">Limpar</a>
+  </form>
+</div>
+
+<div class="grid grid-cols-3 gap-4">
+  {% for doacao in doacoes %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+    {% if doacao.imagem %}
+    <img src="{{ doacao.imagem.url }}" alt="{{ doacao.titulo }}" class="w-full h-40 object-cover">
+    {% else %}
+    <div class="w-full h-40 bg-gray-50 flex items-center justify-center text-4xl">📦</div>
+    {% endif %}
+    <div class="p-4">
+      <div class="flex justify-between items-start mb-2">
+        <h3 class="font-semibold text-gray-800">{{ doacao.titulo }}</h3>
+        <span class="status-badge badge-{{ doacao.status }}">{{ doacao.get_status_display }}</span>
+      </div>
+      <p class="text-sm text-gray-500 mb-1">{{ doacao.categoria.nome }}</p>
+      <p class="text-sm text-gray-600 mb-3">{{ doacao.descricao|truncatewords:12 }}</p>
+      <div class="flex justify-between items-center">
+        <span class="text-xs text-gray-400">{{ doacao.doador.get_full_name|default:doacao.doador.username }}</span>
+        <div class="flex gap-2 items-center">
+          <a href="{% url 'doacoes:detalhe' doacao.pk %}" class="text-sm text-primary hover:underline">Ver mais</a>
+          {% if doacao.status == 'disponivel' %}
+            {% if request.user.tipo == 'beneficiario' or request.user.tipo == 'ong' %}
+            <a href="{% url 'pedidos:novo' doacao.pk %}"
+              class="bg-primary text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-primary-dark transition-colors">
+              Solicitar
+            </a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-span-3 text-center py-12 text-gray-400">
+    <div class="text-5xl mb-3">📦</div>
+    <p>Nenhuma doação encontrada.</p>
+    {% if request.user.tipo == 'doador' %}
+    <a href="{% url 'doacoes:nova' %}" class="inline-block mt-3 text-primary hover:underline text-sm">Seja o primeiro a doar →</a>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

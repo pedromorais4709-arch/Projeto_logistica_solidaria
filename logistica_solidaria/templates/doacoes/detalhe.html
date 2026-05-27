@@ -1,0 +1,59 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ doacao.titulo }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'doacoes:lista' %}" class="text-gray-400 hover:text-gray-600">← Voltar</a>
+    <h1 class="text-2xl font-bold">{{ doacao.titulo }}</h1>
+    <span class="status-badge badge-{{ doacao.status }}">{{ doacao.get_status_display }}</span>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    {% if doacao.imagem %}
+    <img src="{{ doacao.imagem.url }}" alt="{{ doacao.titulo }}" class="w-full h-64 object-cover">
+    {% else %}
+    <div class="w-full h-48 bg-gray-50 flex items-center justify-center text-6xl">📦</div>
+    {% endif %}
+    <div class="p-6">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div><p class="text-xs text-gray-400 uppercase tracking-wide">Categoria</p><p class="font-medium mt-1">{{ doacao.categoria.nome }}</p></div>
+        <div><p class="text-xs text-gray-400 uppercase tracking-wide">Quantidade</p><p class="font-medium mt-1">{{ doacao.quantidade }}</p></div>
+        <div><p class="text-xs text-gray-400 uppercase tracking-wide">Condição</p><p class="font-medium mt-1">{{ doacao.get_condicao_display }}</p></div>
+        <div><p class="text-xs text-gray-400 uppercase tracking-wide">Doador</p><p class="font-medium mt-1">{{ doacao.doador.get_full_name|default:doacao.doador.username }}</p></div>
+      </div>
+      <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Descrição</p>
+      <p class="text-gray-700 mb-6">{{ doacao.descricao }}</p>
+
+      <div class="flex gap-3">
+        {% if doacao.status == 'disponivel' %}
+          {% if request.user.tipo == 'beneficiario' or request.user.tipo == 'ong' %}
+          <a href="{% url 'pedidos:novo' doacao.pk %}"
+            class="bg-primary text-white px-6 py-2.5 rounded-lg font-medium text-sm hover:bg-primary-dark transition-colors">
+            Solicitar esta doação
+          </a>
+          {% elif request.user.tipo == 'doador' and doacao.doador != request.user %}
+          <p class="text-sm text-gray-400 bg-gray-50 px-4 py-2.5 rounded-lg">Apenas beneficiários e ONGs podem solicitar doações.</p>
+          {% endif %}
+        {% else %}
+        <p class="text-sm text-gray-400 bg-gray-50 px-4 py-2.5 rounded-lg">Esta doação não está mais disponível.</p>
+        {% endif %}
+
+        {% if doacao.doador == request.user %}
+        <a href="{% url 'doacoes:editar' doacao.pk %}"
+          class="px-6 py-2.5 rounded-lg text-sm text-gray-600 border border-gray-200 hover:bg-gray-50 transition-colors">
+          Editar
+        </a>
+        {% if doacao.status == 'disponivel' %}
+        <a href="{% url 'doacoes:cancelar' doacao.pk %}"
+          class="px-6 py-2.5 rounded-lg text-sm text-red-500 border border-red-200 hover:bg-red-50 transition-colors"
+          onclick="return confirm('Confirmar cancelamento?')">
+          Cancelar doação
+        </a>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

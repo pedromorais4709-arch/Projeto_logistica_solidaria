@@ -1,0 +1,25 @@
+{% extends 'base/base.html' %}
+{% block title %}Avaliações{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Avaliações</h1>
+<div class="flex flex-col gap-4">
+  {% for av in avaliacoes %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+    <div class="flex justify-between items-start mb-2">
+      <div>
+        <p class="font-semibold">{{ av.pedido.doacao.titulo }}</p>
+        <p class="text-sm text-gray-500">por {{ av.avaliador.get_full_name|default:av.avaliador.username }}</p>
+      </div>
+      <div class="text-yellow-400 text-lg">
+        {% for i in "12345" %}{% if forloop.counter <= av.nota_geral %}★{% else %}☆{% endif %}{% endfor %}
+      </div>
+    </div>
+    {% if av.comentario %}<p class="text-sm text-gray-600">{{ av.comentario }}</p>{% endif %}
+    <p class="text-xs text-gray-400 mt-2">{{ av.data_avaliacao|date:"d/m/Y" }}</p>
+  </div>
+  {% empty %}
+  <div class="text-center py-12 text-gray-400"><div class="text-5xl mb-3">⭐</div><p>Nenhuma avaliação ainda.</p></div>
+  {% endfor %}
+</div>
+{% endblock %}
