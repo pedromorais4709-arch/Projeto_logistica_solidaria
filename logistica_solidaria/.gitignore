@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ambiente virtual
 
 .venv/
@@ -31,3 +32,35 @@ staticfiles/
 # Logs
 
 *.log
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Django
+/media/
+/staticfiles/
+/logs/
+
+# Ambiente
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+db.sqlite3
+# Script SQL deve ir para o repo
+>>>>>>> 4cd7bc58a93ba1de2bb3b988535defef8d6382a4
