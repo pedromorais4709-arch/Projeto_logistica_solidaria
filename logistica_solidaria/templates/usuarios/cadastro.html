@@ -1,0 +1,178 @@
+{% extends 'base/base.html' %}
+{% block title %}Cadastro — Logística Solidária{% endblock %}
+{% block main_class %}flex flex-col items-center justify-center min-h-[85vh] px-4 py-8{% endblock %}
+
+{% block topbar %}
+<header class="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+  <a href="{% url 'usuarios:home' %}" class="flex items-center gap-2 text-primary font-bold text-lg">♡ Logística Solidária</a>
+  <nav class="flex items-center gap-4 text-sm">
+    <a href="{% url 'usuarios:login' %}" class="text-gray-600 hover:text-primary">Já tenho conta</a>
+    <a href="{% url 'usuarios:home' %}" class="text-gray-500 hover:text-gray-700">← Voltar ao Menu</a>
+  </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-lg">
+  <h1 class="text-2xl font-bold text-center mb-1">Cadastro</h1>
+  <p class="text-gray-500 text-sm text-center mb-6">Preencha os dados abaixo para fazer parte da nossa rede solidária</p>
+
+  <form method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
+    {% csrf_token %}
+
+    <!-- Tipo -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Cadastro</label>
+      <select name="tipo" id="tipo" required onchange="alternarCampos()"
+        class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+        <option value="doador">Doador</option>
+        <option value="beneficiario">Beneficiário</option>
+        <option value="voluntario">Voluntário (Transporte)</option>
+        <option value="ong">ONG</option>
+      </select>
+    </div>
+
+    <!-- Campos Doador / Beneficiário / Voluntário -->
+    <div id="campos-pessoa" class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+          <input type="text" name="first_name"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Seu nome">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Sobrenome</label>
+          <input type="text" name="last_name"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Seu sobrenome">
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+          <input type="text" name="telefone"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="(00) 00000-0000">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
+          <input type="text" name="cpf"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="000.000.000-00">
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos ONG -->
+    <div id="campos-ong" class="flex flex-col gap-4 hidden">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Razão Social</label>
+        <input type="text" name="razao_social"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Nome oficial da ONG">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Responsável</label>
+        <input type="text" name="first_name_ong"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Nome do representante legal">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+          <input type="text" name="telefone_ong"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="(00) 00000-0000">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">CNPJ</label>
+          <input type="text" name="cnpj"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="00.000.000/0000-00">
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos Voluntário -->
+    <div id="campos-voluntario" class="flex flex-col gap-4 hidden">
+      <p class="text-xs text-gray-500 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">Informações do veículo para transporte de doações</p>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Veículo</label>
+          <select name="tipo_veiculo"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            <option value="">Selecione</option>
+            <option value="carro">Carro</option>
+            <option value="moto">Moto</option>
+            <option value="van">Van</option>
+            <option value="caminhao">Caminhão</option>
+            <option value="bicicleta">Bicicleta</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Placa do Veículo</label>
+          <input type="text" name="placa_veiculo"
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="ABC-1234">
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos comuns -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">E-mail</label>
+      <input type="email" name="email" required
+        class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder="seuemail@exemplo.com">
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+        <input type="text" name="cidade"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Sua cidade">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+        <input type="text" name="estado" maxlength="2"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="UF">
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+        <input type="password" name="password1" required
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="••••••••">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Confirmar Senha</label>
+        <input type="password" name="password2" required
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="••••••••">
+      </div>
+    </div>
+
+    <button type="submit"
+      class="w-full bg-primary text-white py-2.5 rounded-lg font-medium text-sm hover:bg-primary-dark transition-colors mt-2">
+      Finalizar Cadastro
+    </button>
+    <p class="text-center text-sm text-gray-500">
+      Já tem uma conta? <a href="{% url 'usuarios:login' %}" class="text-primary font-medium hover:underline">Entrar</a>
+    </p>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function alternarCampos() {
+  const tipo = document.getElementById('tipo').value;
+  document.getElementById('campos-pessoa').classList.toggle('hidden', tipo === 'ong');
+  document.getElementById('campos-ong').classList.toggle('hidden', tipo !== 'ong');
+  document.getElementById('campos-voluntario').classList.toggle('hidden', tipo !== 'voluntario');
+}
+</script>
+{% endblock %}

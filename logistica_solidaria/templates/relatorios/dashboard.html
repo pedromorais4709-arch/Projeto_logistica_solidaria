@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+{% block title %}Painel — Logística Solidária{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">Bem-vindo ao seu Painel</h1>
+    <p class="text-gray-500 text-sm">Gerencie suas atividades e informações</p>
+  </div>
+  <a href="{% url 'doacoes:nova' %}" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors flex items-center gap-2">
+    + Nova Doação
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="grid grid-cols-4 gap-4 mb-6">
+  {% for label, value, sub, icon in stats_list %}
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <div class="flex justify-between items-start mb-3">
+      <span class="text-sm text-gray-500">{{ label }}</span>
+      <span class="text-xl">{{ icon }}</span>
+    </div>
+    <p class="text-3xl font-bold text-primary">{{ value }}</p>
+    <p class="text-xs text-gray-400 mt-1">{{ sub }}</p>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Pedidos recentes -->
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm">
+  <div class="flex justify-between items-center px-5 py-4 border-b border-gray-50">
+    <h2 class="font-semibold text-gray-800">Pedidos Recentes</h2>
+    <a href="{% url 'pedidos:lista' %}" class="text-sm text-primary hover:underline">Ver todos →</a>
+  </div>
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="bg-gray-50 text-xs uppercase text-gray-400 tracking-wide">
+        <th class="px-5 py-3 text-left">#</th>
+        <th class="px-5 py-3 text-left">Beneficiário</th>
+        <th class="px-5 py-3 text-left">Doação</th>
+        <th class="px-5 py-3 text-left">Status</th>
+        <th class="px-5 py-3 text-left">Data</th>
+        <th class="px-5 py-3 text-left">Rastreio</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-50">
+      {% for pedido in pedidos_recentes %}
+      <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-5 py-3 text-gray-400">{{ pedido.pk }}</td>
+        <td class="px-5 py-3 font-medium">{{ pedido.beneficiario.get_full_name|default:pedido.beneficiario.username }}</td>
+        <td class="px-5 py-3 text-gray-600">{{ pedido.doacao.titulo }}</td>
+        <td class="px-5 py-3">
+          <span class="status-badge badge-{{ pedido.status }}">{{ pedido.get_status_display }}</span>
+        </td>
+        <td class="px-5 py-3 text-gray-400">{{ pedido.data_criacao|date:"d/m/Y" }}</td>
+        <td class="px-5 py-3">
+          <a href="{% url 'rastreamento:detalhe' pedido.codigo_rastreio %}" class="text-primary hover:underline text-xs">
+            {{ pedido.codigo_rastreio }}
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="px-5 py-10 text-center text-gray-400">Nenhum pedido ainda.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

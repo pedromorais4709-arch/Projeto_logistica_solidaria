@@ -1,0 +1,70 @@
+{% extends 'base/base.html' %}
+{% block title %}{{ ong.pagina_titulo }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <a href="{% url 'usuarios:ongs' %}" class="text-gray-400 hover:text-gray-600 text-sm mb-6 inline-block">← Voltar para ONGs</a>
+
+  <!-- Header da ONG -->
+  <div class="bg-primary rounded-2xl p-8 mb-6 text-white">
+    <div class="flex items-start gap-4">
+      <div class="w-16 h-16 bg-white bg-opacity-20 rounded-xl flex items-center justify-center text-3xl shrink-0">🤝</div>
+      <div>
+        <h1 class="text-2xl font-bold">{{ ong.pagina_titulo|default:ong.razao_social }}</h1>
+        <p class="text-green-100 mt-1">{{ ong.pagina_descricao }}</p>
+        {% if ong.cidade %}
+        <p class="text-green-200 text-sm mt-2">📍 {{ ong.cidade }}{% if ong.estado %}/{{ ong.estado }}{% endif %}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Missão e História -->
+  {% if ong.pagina_missao %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-4">
+    <h2 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">🎯 Nossa Missão</h2>
+    <p class="text-gray-600 text-sm leading-relaxed">{{ ong.pagina_missao }}</p>
+  </div>
+  {% endif %}
+
+  {% if ong.pagina_historia %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-4">
+    <h2 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">📖 Nossa História</h2>
+    <p class="text-gray-600 text-sm leading-relaxed">{{ ong.pagina_historia }}</p>
+  </div>
+  {% endif %}
+
+  <!-- Necessidades atuais -->
+  {% if pedidos_abertos %}
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-4">
+    <h2 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">📋 Necessidades Atuais</h2>
+    <div class="flex flex-col gap-3">
+      {% for pedido in pedidos_abertos %}
+      <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+        <div>
+          <p class="font-medium text-sm">{{ pedido.doacao.titulo }}</p>
+          <p class="text-xs text-gray-500">{{ pedido.doacao.categoria.nome }} · Quantidade: {{ pedido.quantidade_solicitada }}</p>
+        </div>
+        {% if request.user.tipo == 'doador' %}
+        <a href="{% url 'doacoes:lista' %}"
+          class="bg-primary text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-primary-dark transition-colors">
+          Quero ajudar
+        </a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Contato -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+    <h2 class="font-semibold text-gray-800 mb-3">📞 Contato</h2>
+    <div class="flex flex-col gap-2 text-sm text-gray-600">
+      {% if ong.email %}<p>✉️ {{ ong.email }}</p>{% endif %}
+      {% if ong.telefone %}<p>📱 {{ ong.telefone }}</p>{% endif %}
+      {% if ong.cidade %}<p>📍 {{ ong.cidade }}{% if ong.estado %}/{{ ong.estado }}{% endif %}</p>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

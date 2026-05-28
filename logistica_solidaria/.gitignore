@@ -1,0 +1,33 @@
+# Ambiente virtual
+
+.venv/
+venv/
+
+# Python
+
+**pycache**/
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+
+db.sqlite3
+media/
+
+# VSCode
+
+.vscode/
+
+# Linux
+
+*.swp
+*~
+
+# Static build
+
+staticfiles/
+
+# Logs
+
+*.log

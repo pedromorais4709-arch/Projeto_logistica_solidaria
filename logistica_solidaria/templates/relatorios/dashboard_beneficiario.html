@@ -1,0 +1,94 @@
+{% extends 'base/base.html' %}
+{% block title %}Painel{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h1 class="text-2xl font-bold">Bem-vindo, {{ user.get_full_name|default:user.username }}!</h1>
+    <p class="text-gray-500 text-sm">{{ user.get_tipo_display }} — Gerencie suas solicitações</p>
+  </div>
+  <a href="{% url 'doacoes:lista' %}" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">Ver Doações Disponíveis</a>
+</div>
+
+<!-- Aviso página ONG -->
+{% if user.e_ong and not stats.pagina_publicada %}
+<div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-xl p-4 mb-6 flex items-start gap-3">
+  <span class="text-xl">📄</span>
+  <div>
+    <p class="font-semibold text-yellow-800">Você ainda não criou sua página pública</p>
+    <p class="text-sm text-yellow-700">Crie sua página para que doadores possam conhecer melhor seu trabalho e contribuir com suas metas</p>
+    <a href="{% url 'usuarios:pagina_ong' %}" class="inline-block mt-2 bg-yellow-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">Criar Minha Página Agora</a>
+  </div>
+</div>
+{% endif %}
+
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Total de Pedidos</p>
+    <p class="text-3xl font-bold text-primary mt-1">{{ stats.total_pedidos }}</p>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Pendentes</p>
+    <p class="text-3xl font-bold text-yellow-500 mt-1">{{ stats.pendentes }}</p>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Recebidos</p>
+    <p class="text-3xl font-bold text-green-500 mt-1">{{ stats.entregues }}</p>
+  </div>
+</div>
+
+<!-- Links rápidos -->
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <a href="{% url 'doacoes:lista' %}" class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2">
+    <span class="text-2xl">📦</span>
+    <p class="font-semibold">Ver Doações</p>
+    <p class="text-xs text-gray-500">Encontre itens disponíveis</p>
+  </a>
+  <a href="{% url 'pedidos:lista' %}" class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2">
+    <span class="text-2xl">📋</span>
+    <p class="font-semibold">Meus Pedidos</p>
+    <p class="text-xs text-gray-500">Acompanhe suas solicitações</p>
+  </a>
+  {% if user.e_ong %}
+  <a href="{% url 'usuarios:pagina_ong' %}" class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2">
+    <span class="text-2xl">🌐</span>
+    <p class="font-semibold">Minha Página</p>
+    <p class="text-xs text-gray-500">Configure sua página pública</p>
+  </a>
+  {% else %}
+  <a href="{% url 'rastreamento:consulta' %}" class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow flex flex-col gap-2">
+    <span class="text-2xl">📍</span>
+    <p class="font-semibold">Rastrear</p>
+    <p class="text-xs text-gray-500">Acompanhe suas entregas</p>
+  </a>
+  {% endif %}
+</div>
+
+<!-- Pedidos recentes -->
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm">
+  <div class="flex justify-between items-center px-5 py-4 border-b border-gray-50">
+    <h2 class="font-semibold">Pedidos Recentes</h2>
+    <a href="{% url 'pedidos:lista' %}" class="text-sm text-primary hover:underline">Ver todos →</a>
+  </div>
+  <table class="w-full text-sm">
+    <thead><tr class="bg-gray-50 text-xs uppercase text-gray-400 tracking-wide">
+      <th class="px-5 py-3 text-left">Doação</th>
+      <th class="px-5 py-3 text-left">Status</th>
+      <th class="px-5 py-3 text-left">Data</th>
+      <th class="px-5 py-3 text-left">Rastreio</th>
+    </tr></thead>
+    <tbody class="divide-y divide-gray-50">
+      {% for p in meus_pedidos %}
+      <tr class="hover:bg-gray-50">
+        <td class="px-5 py-3 font-medium"><a href="{% url 'pedidos:detalhe' p.pk %}" class="hover:text-primary">{{ p.doacao.titulo }}</a></td>
+        <td class="px-5 py-3"><span class="status-badge badge-{{ p.status }}">{{ p.get_status_display }}</span></td>
+        <td class="px-5 py-3 text-gray-400">{{ p.data_criacao|date:"d/m/Y" }}</td>
+        <td class="px-5 py-3 text-xs font-mono text-gray-400">{{ p.codigo_rastreio }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="px-5 py-10 text-center text-gray-400">Nenhum pedido ainda. <a href="{% url 'doacoes:lista' %}" class="text-primary hover:underline">Ver doações disponíveis →</a></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

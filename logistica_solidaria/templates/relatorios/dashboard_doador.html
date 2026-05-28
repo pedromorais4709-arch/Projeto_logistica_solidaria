@@ -1,0 +1,54 @@
+{% extends 'base/base.html' %}
+{% block title %}Painel do Doador{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h1 class="text-2xl font-bold">Bem-vindo, {{ user.get_full_name|default:user.username }}!</h1>
+    <p class="text-gray-500 text-sm">Gerencie suas doações</p>
+  </div>
+  <a href="{% url 'doacoes:nova' %}" class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors">+ Nova Doação</a>
+</div>
+
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Total de Doações</p>
+    <p class="text-3xl font-bold text-primary mt-1">{{ stats.total }}</p>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Disponíveis</p>
+    <p class="text-3xl font-bold text-blue-500 mt-1">{{ stats.disponiveis }}</p>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+    <p class="text-sm text-gray-500">Entregues</p>
+    <p class="text-3xl font-bold text-green-500 mt-1">{{ stats.entregues }}</p>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl border border-gray-100 shadow-sm">
+  <div class="flex justify-between items-center px-5 py-4 border-b border-gray-50">
+    <h2 class="font-semibold">Minhas Doações</h2>
+    <a href="{% url 'doacoes:lista' %}" class="text-sm text-primary hover:underline">Ver todas →</a>
+  </div>
+  <table class="w-full text-sm">
+    <thead><tr class="bg-gray-50 text-xs uppercase text-gray-400 tracking-wide">
+      <th class="px-5 py-3 text-left">Título</th>
+      <th class="px-5 py-3 text-left">Categoria</th>
+      <th class="px-5 py-3 text-left">Status</th>
+      <th class="px-5 py-3 text-left">Data</th>
+    </tr></thead>
+    <tbody class="divide-y divide-gray-50">
+      {% for d in minhas_doacoes %}
+      <tr class="hover:bg-gray-50">
+        <td class="px-5 py-3 font-medium"><a href="{% url 'doacoes:detalhe' d.pk %}" class="hover:text-primary">{{ d.titulo }}</a></td>
+        <td class="px-5 py-3 text-gray-500">{{ d.categoria.nome }}</td>
+        <td class="px-5 py-3"><span class="status-badge badge-{{ d.status }}">{{ d.get_status_display }}</span></td>
+        <td class="px-5 py-3 text-gray-400">{{ d.data_criacao|date:"d/m/Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="px-5 py-10 text-center text-gray-400">Nenhuma doação ainda. <a href="{% url 'doacoes:nova' %}" class="text-primary hover:underline">Criar agora →</a></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

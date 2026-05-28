@@ -1,0 +1,170 @@
+{# templates/relatorios/dashboard_voluntario.html #}
+{% extends 'base/base.html' %}
+{% block title %}Dashboard — Voluntário{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-6 py-8">
+
+  <!-- Cabeçalho -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Bem-vinda, {{ request.user.first_name|default:request.user.username }}!</h1>
+    <p class="text-gray-500 text-sm mt-1">Suas entregas solidárias</p>
+  </div>
+
+  <!-- Cards de estatísticas -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-400 mb-1">Total de Entregas</p>
+      <p class="text-3xl font-bold text-gray-900">{{ stats.total_entregas }}</p>
+      <span class="text-lg mt-1 block">🚚</span>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-400 mb-1">Em Andamento</p>
+      <p class="text-3xl font-bold text-blue-600">{{ stats.em_andamento }}</p>
+      <span class="text-lg mt-1 block">🕐</span>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-400 mb-1">Agendadas</p>
+      <p class="text-3xl font-bold text-yellow-500">{{ stats.agendadas }}</p>
+      <span class="text-lg mt-1 block">📍</span>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <p class="text-xs text-gray-400 mb-1">Este Mês</p>
+      <p class="text-3xl font-bold text-green-600">{{ stats.este_mes }}</p>
+      <span class="text-lg mt-1 block">✅</span>
+    </div>
+  </div>
+
+  <!-- Minhas Entregas -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 mb-6">
+    <h2 class="text-base font-semibold text-gray-800 mb-4">Minhas Entregas</h2>
+
+    {% if minhas_entregas %}
+      {% for pedido in minhas_entregas %}
+      <div class="border border-gray-100 rounded-xl p-4 mb-3 last:mb-0">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <!-- Título e badge -->
+            <div class="flex items-center gap-2 mb-3">
+              <span class="font-semibold text-gray-800">{{ pedido.doacao.categoria }}</span>
+              {% if pedido.status == 'em_separacao' %}
+                <span class="text-xs bg-yellow-100 text-yellow-700 font-medium px-2 py-0.5 rounded-full">Agendada</span>
+              {% elif pedido.status == 'em_transito' %}
+                <span class="text-xs bg-blue-100 text-blue-700 font-medium px-2 py-0.5 rounded-full">Em andamento</span>
+              {% endif %}
+            </div>
+            <!-- Coleta -->
+            <div class="flex items-start gap-2 mb-1">
+              <span class="text-green-500 mt-0.5">📍</span>
+              <div>
+                <p class="text-xs text-gray-400">Coleta</p>
+                <p class="text-sm font-medium text-gray-700">{{ pedido.doacao.doador.cidade|default:"—" }}</p>
+              </div>
+            </div>
+            <!-- Entrega -->
+            <div class="flex items-start gap-2 mb-2">
+              <span class="text-red-400 mt-0.5">📍</span>
+              <div>
+                <p class="text-xs text-gray-400">Entrega</p>
+                <p class="text-sm font-medium text-gray-700">{{ pedido.beneficiario.get_full_name|default:pedido.beneficiario.username }}</p>
+                <p class="text-xs text-gray-400">{{ pedido.beneficiario.cidade|default:"" }}</p>
+              </div>
+            </div>
+            <!-- Rodapé info -->
+            <div class="flex items-center gap-4 text-xs text-gray-400 mt-2">
+              <span>🕐 {{ pedido.data_atualizacao|date:"d/m/Y" }}</span>
+              <span>📦 {{ pedido.quantidade_solicitada }} item{% if pedido.quantidade_solicitada > 1 %}s{% endif %}</span>
+            </div>
+          </div>
+
+          <!-- Ações -->
+          <div class="flex flex-col gap-2 shrink-0">
+            {% if pedido.status == 'em_separacao' %}
+              <form method="post" action="{% url 'pedidos:atualizar_status' pedido.pk %}">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="em_transito">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                  Iniciar
+                </button>
+              </form>
+            {% elif pedido.status == 'em_transito' %}
+              <form method="post" action="{% url 'pedidos:concluir_entrega' pedido.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                  Concluir
+                </button>
+              </form>
+            {% endif %}
+            <a href="{% url 'pedidos:detalhe' pedido.pk %}" class="text-sm text-blue-600 hover:underline text-center">Ver detalhes</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-sm text-gray-400 text-center py-6">Você não tem entregas ativas no momento.</p>
+    {% endif %}
+  </div>
+
+  <!-- Entregas Disponíveis -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+    <h2 class="text-base font-semibold text-gray-800 mb-1">Entregas Disponíveis</h2>
+    <p class="text-sm text-gray-400 mb-4">Ajude transportando doações para quem precisa</p>
+
+    {% if entregas_disponiveis %}
+      {% for pedido in entregas_disponiveis %}
+      <div class="border border-gray-100 rounded-xl p-4 mb-3 last:mb-0">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="font-semibold text-gray-800">{{ pedido.doacao.titulo }}</span>
+              {% if pedido.prioridade == 'urgente' %}
+                <span class="text-xs bg-red-100 text-red-700 font-medium px-2 py-0.5 rounded-full">Urgente</span>
+              {% elif pedido.prioridade == 'alta' %}
+                <span class="text-xs bg-orange-100 text-orange-700 font-medium px-2 py-0.5 rounded-full">Alta prioridade</span>
+              {% endif %}
+            </div>
+            <div class="flex items-start gap-2 mb-1">
+              <span class="text-green-500 mt-0.5">📍</span>
+              <div>
+                <p class="text-xs text-gray-400">Coleta</p>
+                <p class="text-sm font-medium text-gray-700">{{ pedido.doacao.doador.cidade|default:"—" }}</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 mb-2">
+              <span class="text-red-400 mt-0.5">📍</span>
+              <div>
+                <p class="text-xs text-gray-400">Entrega</p>
+                <p class="text-sm font-medium text-gray-700">{{ pedido.beneficiario.get_full_name|default:pedido.beneficiario.username }}</p>
+                <p class="text-xs text-gray-400">{{ pedido.beneficiario.cidade|default:"" }}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-4 text-xs text-gray-400 mt-2">
+              <span>📦 {{ pedido.quantidade_solicitada }} item{% if pedido.quantidade_solicitada > 1 %}s{% endif %}</span>
+              <span>{{ pedido.doacao.get_condicao_display }}</span>
+            </div>
+          </div>
+
+          <div class="shrink-0">
+            <form method="post" action="{% url 'pedidos:aceitar_entrega' pedido.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                Aceitar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-sm text-gray-400 text-center py-6">Não há entregas disponíveis no momento.</p>
+    {% endif %}
+
+    <div class="mt-4">
+      <a href="{% url 'pedidos:lista' %}" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+        Ver Todas as Entregas Disponíveis
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

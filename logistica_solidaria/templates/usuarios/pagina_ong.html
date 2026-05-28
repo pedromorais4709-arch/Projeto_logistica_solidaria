@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+{% block title %}Minha Página Pública{% endblock %}
+
+{% block topbar %}
+<header class="bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+  <a href="{% url 'usuarios:home' %}" class="flex items-center gap-2 text-primary font-bold text-lg">♡ Logística Solidária</a>
+  <nav class="flex items-center gap-4 text-sm">
+    <a href="{% url 'relatorios:dashboard' %}" class="text-gray-500 hover:text-gray-700">← Voltar ao Painel</a>
+  </nav>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="flex justify-between items-start mb-6">
+    <div>
+      <h1 class="text-2xl font-bold">Criar Minha Página Pública</h1>
+      <p class="text-gray-500 text-sm">Configure sua página para que doadores possam conhecer seu trabalho</p>
+    </div>
+    {% if usuario.pagina_publicada %}
+    <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-medium">✓ Publicada</span>
+    {% endif %}
+  </div>
+
+  <!-- Preview -->
+  {% if usuario.pagina_publicada %}
+  <div class="bg-primary rounded-xl p-5 mb-6 text-white">
+    <h2 class="text-xl font-bold">{{ usuario.pagina_titulo|default:"Título da Organização" }}</h2>
+    <p class="text-green-100 text-sm mt-1">{{ usuario.pagina_descricao|default:"Descrição da organização" }}</p>
+  </div>
+  {% if usuario.pagina_missao %}
+  <div class="bg-white rounded-xl border border-gray-100 p-5 mb-4">
+    <h3 class="font-semibold mb-2">Nossa Missão</h3>
+    <p class="text-sm text-gray-600">{{ usuario.pagina_missao }}</p>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  <!-- Formulário -->
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+    <form method="post" class="flex flex-col gap-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Título da Página</label>
+        <input type="text" name="pagina_titulo" value="{{ usuario.pagina_titulo }}"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Ex: Instituto Alimentos para Todos">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Descrição Curta</label>
+        <textarea name="pagina_descricao" rows="3"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Uma breve descrição do seu trabalho (máx. 200 caracteres)">{{ usuario.pagina_descricao }}</textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nossa Missão</label>
+        <textarea name="pagina_missao" rows="4"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Descreva a missão e objetivos da sua organização">{{ usuario.pagina_missao }}</textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nossa História</label>
+        <textarea name="pagina_historia" rows="4"
+          class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          placeholder="Conte sua história e como tudo começou">{{ usuario.pagina_historia }}</textarea>
+      </div>
+      <button type="submit"
+        class="w-full bg-primary text-white py-2.5 rounded-lg font-medium text-sm hover:bg-primary-dark transition-colors">
+        {% if usuario.pagina_publicada %}Atualizar Página{% else %}Publicar Página{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

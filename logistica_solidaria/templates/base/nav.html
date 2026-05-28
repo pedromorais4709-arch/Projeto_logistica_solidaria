@@ -1,0 +1,26 @@
+{% load static %}
+<nav style="display:flex; flex-direction:column; gap:4px; flex:1;">
+  <a href="{% url 'relatorios:dashboard' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+    <i class="fas fa-chart-line"></i> Dashboard
+  </a>
+  <a href="{% url 'doacoes:lista' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+    <i class="fas fa-gift"></i> Doações
+  </a>
+  <a href="{% url 'pedidos:lista' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+    <i class="fas fa-clipboard-list"></i> Pedidos
+  </a>
+  <a href="{% url 'rastreamento:consulta' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+    <i class="fas fa-map-marker-alt"></i> Rastreamento
+  </a>
+  <a href="{% url 'avaliacoes:lista' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+    <i class="fas fa-star"></i> Avaliações
+  </a>
+  <a href="{% url 'notificacoes:lista' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+    <i class="fas fa-bell"></i> Notificações
+  </a>
+  <div style="margin-top:auto; border-top:1px solid rgba(255,255,255,0.1); padding-top:1rem;">
+    <a href="{% url 'usuarios:logout' %}" style="color:rgba(255,255,255,0.75); text-decoration:none; padding:8px 10px; border-radius:6px; display:flex; align-items:center; gap:10px; font-size:0.875rem;">
+      <i class="fas fa-sign-out-alt"></i> Sair
+    </a>
+  </div>
+</nav>

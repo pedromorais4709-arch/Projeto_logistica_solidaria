@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+{% block title %}Logística Solidária — Conectando doações com quem precisa{% endblock %}
+{% block main_class %}{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="max-w-4xl mx-auto px-6 py-20 text-center">
+  <h1 class="text-5xl font-bold text-gray-900 mb-4">Conectando doações com quem precisa</h1>
+  <p class="text-gray-500 text-lg mb-12">Facilitamos a distribuição de doações para comunidades carentes através de<br>uma rede solidária de logística</p>
+
+  <!-- Cards -->
+  <div class="grid grid-cols-3 gap-6 mb-12">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-left">
+      <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+        <span class="text-xl">📦</span>
+      </div>
+      <h3 class="font-semibold text-gray-800 mb-2">Doe com Facilidade</h3>
+      <p class="text-sm text-gray-500">Cadastre suas doações e nós cuidamos da logística para que cheguem a quem precisa</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-left">
+      <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+        <span class="text-xl">🚚</span>
+      </div>
+      <h3 class="font-semibold text-gray-800 mb-2">Transporte Solidário</h3>
+      <p class="text-sm text-gray-500">Nossa rede de voluntários garante que as doações sejam transportadas de forma eficiente</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 text-left">
+      <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+        <span class="text-xl">👥</span>
+      </div>
+      <h3 class="font-semibold text-gray-800 mb-2">Impacto Real</h3>
+      <p class="text-sm text-gray-500">Acompanhe o impacto das suas doações e ajude a transformar vidas</p>
+    </div>
+  </div>
+
+  <a href="{% url 'usuarios:cadastro' %}" class="bg-primary text-white px-8 py-3 rounded-xl font-medium text-base hover:bg-primary-dark transition-colors inline-block">
+    Comece a Fazer a Diferença
+  </a>
+</div>
+{% endblock %}

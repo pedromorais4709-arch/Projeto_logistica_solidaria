@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% block title %}Rastreamento {{ pedido.codigo_rastreio }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="flex items-center gap-3 mb-6">
+    <a href="{% url 'rastreamento:consulta' %}" class="text-gray-400 hover:text-gray-600">← Voltar</a>
+    <h1 class="text-2xl font-bold">Rastreamento</h1>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-4">
+    <div class="flex justify-between items-center mb-2">
+      <p class="font-semibold">{{ pedido.doacao.titulo }}</p>
+      <span class="status-badge badge-{{ pedido.status }}">{{ pedido.get_status_display }}</span>
+    </div>
+    <p class="text-sm text-gray-500">Código: <span class="font-mono font-medium">{{ pedido.codigo_rastreio }}</span></p>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+    <p class="text-xs text-gray-400 uppercase tracking-wide mb-4">Histórico</p>
+    <div class="flex flex-col gap-4">
+      {% for evento in eventos %}
+      <div class="flex gap-3">
+        <div class="flex flex-col items-center">
+          <div class="w-3 h-3 rounded-full bg-primary shrink-0"></div>
+          {% if not forloop.last %}<div class="w-0.5 bg-gray-200 flex-1 my-1"></div>{% endif %}
+        </div>
+        <div class="pb-2">
+          <p class="text-sm font-medium">{{ evento.get_tipo_display }}</p>
+          <p class="text-xs text-gray-500">{{ evento.descricao }}</p>
+          <p class="text-xs text-gray-400 mt-0.5">{{ evento.data_evento|date:"d/m/Y \à\s H:i" }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
